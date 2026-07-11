@@ -46,8 +46,8 @@ const CompanyCreate = () => {
 
             <div className='px-[5%]'>
                 <div className='my-10'>
-                    <h1 className='font-bold text-2xl'>Your Comapny Name</h1>
-                    <p className='text-gray-500'>Lorem ipsum dolor sit. What would you like to give a Comapny name . change later</p>
+                    <h1 className='font-bold text-2xl'>Your Company Name</h1>
+                    <p className='text-gray-500'>Enter the company name you want to manage or post.</p>
                 </div>
 
                 <Label>Company Name</Label>

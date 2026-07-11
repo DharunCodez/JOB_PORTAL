@@ -46,7 +46,7 @@ const Navbar = () => {
         <div className='bg-white overflow-hidden'>
             <div className='flex items-center justify-between mx-auto h-16 max-sm:px-3 sm:px-[5%] lg:px-[10%]'>
                 <div onClick={() => navigate("/")} className='cursor-pointer'>
-                    <h1 className='max-sm:text-lg text-2xl font-bold'>Job <span className='text-[#F83002]'>Portal</span> </h1>
+                    <h1 className='max-sm:text-lg text-2xl font-bold'>Job <span className='text-primary'>Portal</span> </h1>
                 </div>
                 <div className='flex items-center gap-12 max-sm:gap-5'>
                     <ul className='flex font-medium items-center gap-5 max-sm:hidden'>
@@ -76,7 +76,7 @@ const Navbar = () => {
                                     <Button className="cursor-pointer" variant="outline">Login</Button>
                                 </Link>
                                 <Link to="/signup">
-                                    <Button className="bg-[#6A38C2] hover:bg-[#5b30a6] cursor-pointer">Signup</Button>
+                                    <Button className="bg-primary hover:bg-primary/90 cursor-pointer">Signup</Button>
                                 </Link>
                             </div>
                             :

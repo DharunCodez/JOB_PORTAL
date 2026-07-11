@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import Navbar from './shared/Navbar'
-import Footer from './shared/Footer'
 import FilterCard from './FilterCard'
 import Job from './Job'
 import { useDispatch, useSelector } from 'react-redux'
@@ -130,7 +129,6 @@ function Jobs() {
 
 
 
-            <Footer />
         </>
     )
 }

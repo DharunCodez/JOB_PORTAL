@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import Navbar from './shared/Navbar';
 import { Avatar, AvatarImage } from './ui/avatar';
 import { Button } from './ui/button';
@@ -9,7 +9,6 @@ import AppliedJobTable from './AppliedJobTable';
 import UpdateProfileDialog from './UpdateProfileDialog';
 import { useSelector } from 'react-redux';
 import useGetAppliedJobs from '@/hooks/useGetAppliedJobs';
-import Footer from './shared/Footer';
 import { motion } from "framer-motion"
 const skills = ["HTML", "CSS", "JAVASCRIPT", "REACTJS"];
 
@@ -86,7 +85,7 @@ function Profile() {
                         <div className='grid w-full items-center gap-1.5'>
                             <Label className="text-md font-bold">Resume</Label>
                             {
-                                user?.profile?.resume ? <a target='blank' href={user?.profile?.resume} className='text-blue-500 w-full hover:underline cursor-pointer'>{user?.profile?.resumeOriginalName}</a>
+                                user?.profile?.resume ? <a target='blank' href={user?.profile?.resume} className='text-primary w-full hover:underline cursor-pointer'>{user?.profile?.resumeOriginalName}</a>
                                     : <span>NA</span>
                             }
                         </div>
@@ -107,9 +106,6 @@ function Profile() {
 
             {/* update profile */}
             <UpdateProfileDialog open={open} setOpen={setOpen} />
-
-            <Footer />
-
 
 
         </>

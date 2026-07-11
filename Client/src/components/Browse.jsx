@@ -1,6 +1,5 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import Navbar from './shared/Navbar'
-import Footer from './shared/Footer'
 import Job from './Job'
 import { useDispatch, useSelector } from 'react-redux'
 import { setSearchedQuery } from '@/redux/jobSlice'
@@ -66,8 +65,6 @@ const Browse = () => {
 
 
             </div>
-
-            <Footer />
 
         </>
     )

@@ -96,7 +96,7 @@ const Signup = () => {
               value={input.fullname}
               name="fullname"
               onChange={changeEventHandler}
-              placeholder="Shubham Kumar"
+              placeholder="John Doe"
             />
           </div>
           <div className='my-2'>
@@ -171,7 +171,7 @@ const Signup = () => {
               :
               <Button type="submit" className="w-full my-4">Signup</Button>
           }
-          <span className='text-sm'>Already have an account? <Link to="/login" className='text-blue-600'>Login</Link></span>
+          <span className='text-sm'>Already have an account? <Link to="/login" className='text-primary hover:text-primary/80'>Login</Link></span>
         </form>
       </div>
     </div>
