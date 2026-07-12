@@ -126,7 +126,7 @@ const PostJob = () => {
                                 type="text"
                                 name="location"
                                 value={input.location}
-                                placeholder="Job Loaction"
+                                placeholder="Job Location"
                                 onChange={changeEventHandler}
                                 className="focus-visible:ring-offset-0 focus-visible:ring-0 my-1"
                             />

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from './ui/dialog'
 import { Label } from './ui/label'
 import { Input } from './ui/input'
@@ -22,7 +22,7 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
         email: user?.email || "",
         phoneNumber: user?.phoneNumber || "",
         bio: user?.profile?.bio || "",
-        skills: user?.profile?.skills?.map(skill => skill) || "",
+        skills: user?.profile?.skills?.join(",") || "",
         file: user?.profile?.resume || "",
     });
 
@@ -34,6 +34,19 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
         const file = e.target.files?.[0];
         setInput({ ...input, file });
     }
+
+    useEffect(() => {
+        if (open) {
+            setInput({
+                fullname: user?.fullname || "",
+                email: user?.email || "",
+                phoneNumber: user?.phoneNumber || "",
+                bio: user?.profile?.bio || "",
+                skills: user?.profile?.skills?.join(",") || "",
+                file: user?.profile?.resume || "",
+            });
+        }
+    }, [open, user]);
 
 
     const submitHandler = async (e) => {
@@ -64,11 +77,10 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
             }
 
         } catch (error) {
-            console.log(error);
-            toast.error(error.response.data.message);
+            console.error(error);
+            toast.error(error.response?.data?.message || "Failed to update profile. Please try again.");
         } finally {
             setLoading(false);
-
         }
         setOpen(false);
 

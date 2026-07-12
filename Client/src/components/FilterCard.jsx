@@ -3,11 +3,6 @@ import { RadioGroup, RadioGroupItem } from './ui/radio-group'
 import { Label } from './ui/label'
 import { useDispatch } from 'react-redux'
 import { setSearchedQuery } from '@/redux/jobSlice'
-import useGetAllJobs from '@/hooks/useGetAllJobs'
-
-// location
-// salary
-// job types
 
 const filterData = [
     {
@@ -20,14 +15,12 @@ const filterData = [
     },
     {
         filterType: "Salary",
-        array: ["6-10 LPA", "10-40 LPA", "40-100 LPA" ,"100+"]
+        array: ["6-10 LPA", "10-40 LPA", "40-100 LPA", "100+"]
     }
 ]
 
 
 const FilterCard = () => {
-    useGetAllJobs()
-
     const [selectedValue, setSelectedValue] = useState("");
     const dispatch = useDispatch();
 
@@ -35,32 +28,44 @@ const FilterCard = () => {
         setSelectedValue(value);
     }
 
+    const clearFilters = () => {
+        setSelectedValue("");
+    }
 
     useEffect(() => {
-        // console.log(selectedValue);
         dispatch(setSearchedQuery(selectedValue))
     }, [selectedValue])
 
     return (
         <div className='w-full bg-white py-3 rounded-md'>
-            <h1 className='font-bold text-lg'>Filter Jobs</h1>
+            <div className='flex items-center justify-between'>
+                <h1 className='font-bold text-lg'>Filter Jobs</h1>
+                {selectedValue && (
+                    <button
+                        onClick={clearFilters}
+                        className='text-sm text-primary hover:text-primary/80 font-medium cursor-pointer'
+                    >
+                        Clear
+                    </button>
+                )}
+            </div>
             <hr className='mt-3' />
 
             <RadioGroup value={selectedValue} onValueChange={changeHandler}>
                 {
                     filterData.map((data, index) => (
                         <div key={index}>
-                            <h1 className='font-bold text-lg'>{data.filterType}</h1>
+                            <h1 className='font-bold text-lg mt-2'>{data.filterType}</h1>
                             {
                                 data.array.map((item, idx) => {
-                                    const itemId = `r${index - idx}`
+                                    // Fix: use index_idx to guarantee unique IDs across all groups
+                                    const itemId = `filter-${index}-${idx}`
                                     return (
-                                        <div className='flex items-center spac-x-2 gap-1 my-2' key={idx}>
+                                        <div className='flex items-center space-x-2 gap-1 my-2' key={itemId}>
                                             <RadioGroupItem value={item} id={itemId} />
-                                            <Label className="text-base/5" htmlFor={itemId}>{item}</Label>
+                                            <Label className="text-base/5 cursor-pointer" htmlFor={itemId}>{item}</Label>
                                         </div>
                                     )
-
                                 })
                             }
                         </div>

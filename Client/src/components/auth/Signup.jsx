@@ -62,14 +62,13 @@ const Signup = () => {
         withCredentials: true,
       });
       if (response.data.success) {
-        console.log("rt");
         navigate("/login");
         toast.success(response.data.message);
       }
 
     } catch (error) {
-      console.log(error.message);
-      toast.error(error.response.data.message)
+      console.error(error);
+      toast.error(error.response?.data?.message || "Something went wrong. Please try again.")
     } finally {
       dispatch(setLoading(false));
     }

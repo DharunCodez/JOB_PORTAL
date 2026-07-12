@@ -9,11 +9,19 @@ const applicationSlice = createSlice({
         setAllApplicants: (state, action) => {
             state.allApplicants = action.payload;
         },
-
+        updateApplicantStatus: (state, action) => {
+            const { id, status } = action.payload;
+            if (state.allApplicants?.applications) {
+                const app = state.allApplicants.applications.find(a => a._id === id);
+                if (app) {
+                    app.status = status.toLowerCase();
+                }
+            }
+        },
     }
 });
 
 
 
-export const { setAllApplicants } = applicationSlice.actions;
+export const { setAllApplicants, updateApplicantStatus } = applicationSlice.actions;
 export default applicationSlice.reducer

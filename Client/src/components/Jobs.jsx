@@ -34,24 +34,37 @@ function Jobs() {
 
 
 
-    useEffect(() => {
+    // Parses a salary range string like "6-10 LPA" or "100+" into { min, max }
+    const parseSalaryRange = (rangeStr) => {
+        const cleaned = rangeStr.replace(/\s*LPA\s*/i, '').trim();
+        if (cleaned.endsWith('+')) {
+            const min = parseFloat(cleaned);
+            return { min, max: Infinity };
+        }
+        const parts = cleaned.split('-');
+        if (parts.length === 2) {
+            return { min: parseFloat(parts[0]), max: parseFloat(parts[1]) };
+        }
+        return null;
+    }
 
+    useEffect(() => {
         if (searchedQuery) {
+            const salaryRange = parseSalaryRange(searchedQuery);
             const filteredJob = allJobs.filter((job) => {
-                return job?.title.toLowerCase().includes(searchedQuery.toLowerCase()) ||
-                    job?.description.toLowerCase().includes(searchedQuery.toLowerCase()) ||
-                    job?.location.toLowerCase().includes(searchedQuery.toLowerCase())
-                // job?.company.toLowerCase().includes(searchedQuery.toLowerCase())
+                // If the query looks like a salary range, filter numerically
+                if (salaryRange) {
+                    return job?.salary >= salaryRange.min && job?.salary <= salaryRange.max;
+                }
+                // Otherwise do a text-based search across title, description, location
+                return job?.title?.toLowerCase().includes(searchedQuery.toLowerCase()) ||
+                    job?.description?.toLowerCase().includes(searchedQuery.toLowerCase()) ||
+                    job?.location?.toLowerCase().includes(searchedQuery.toLowerCase())
             })
             setFilterJobs(filteredJob)
-            // dispatch(setSearchedQuery(""));
-
-
-        }
-        else {
+        } else {
             setFilterJobs(allJobs)
         }
-
     }, [allJobs, searchedQuery])
 
 

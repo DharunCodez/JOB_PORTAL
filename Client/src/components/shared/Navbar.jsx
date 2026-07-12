@@ -9,7 +9,7 @@ import { toast } from 'sonner'
 import axios from 'axios'
 import { USER_API_END_POINT } from '@/utils/constant'
 import { setUser } from '@/redux/authSlice'
-import { setSearchedQuery } from '@/redux/jobSlice'
+import { setSearchedQuery, setSavedJobs, setAllAppliedJobs } from '@/redux/jobSlice'
 import { motion } from "framer-motion"
 
 const Navbar = () => {
@@ -21,18 +21,20 @@ const Navbar = () => {
 
     const logoutHandler = async () => {
         try {
-            const response = await axios.post(`${USER_API_END_POINT}/logout`, {
+            const response = await axios.post(`${USER_API_END_POINT}/logout`, {}, {
                 withCredentials: true
             })
             if (response.data.success) {
                 dispatch(setUser(null));
+                dispatch(setSavedJobs([]));
+                dispatch(setAllAppliedJobs([]));
                 navigate('/');
                 toast.success(response.data.message);
             }
 
         } catch (error) {
-            console.log(error);
-            toast.error(error.response.data.message);
+            console.error(error);
+            toast.error(error.response?.data?.message || "Logout failed. Please try again.");
         }
     }
 
@@ -107,7 +109,7 @@ const Navbar = () => {
                                                 </Avatar>
                                                 <div>
                                                     <h4 className='font-bold'>{user?.fullname}</h4>
-                                                    <p className='text-sm text-muted-foreground'>
+                                                    <p className='text-sm text-muted-foreground line-clamp-2'>
                                                         {user?.profile?.bio}
                                                     </p>
                                                 </div>

@@ -1,14 +1,23 @@
 import React from 'react'
 import { Button } from './ui/button'
-import { Bookmark } from 'lucide-react'
+import { Bookmark, BookmarkCheck } from 'lucide-react'
 import { Avatar, AvatarImage } from './ui/avatar'
 import { Badge } from './ui/badge'
 import { useNavigate } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import axios from 'axios'
+import { toast } from 'sonner'
+import { SAVED_JOB_API_END_POINT } from '@/utils/constant'
+import { toggleSavedJobLocal } from '@/redux/jobSlice'
 
 const Job = ({ job }) => {
 
     const navigate = useNavigate();
-    // const jobId = "e8ut7yt845y95y56";
+    const dispatch = useDispatch();
+    const { user } = useSelector(store => store.auth);
+    const { savedJobs } = useSelector(store => store.job);
+
+    const isSaved = savedJobs.some(j => (j._id || j) === job?._id);
 
     const daysAgoFunction = (mongodbTime) => {
         const createdAt = new Date(mongodbTime);
@@ -18,6 +27,24 @@ const Job = ({ job }) => {
         return Math.floor(differenceInDays);
     }
 
+    const handleSaveToggle = async () => {
+        if (!user || user.role !== 'student') {
+            toast.error("Only students can save jobs");
+            return;
+        }
+        try {
+            const response = await axios.post(`${SAVED_JOB_API_END_POINT}/toggle/${job._id}`, {}, {
+                withCredentials: true,
+            });
+            if (response.data.success) {
+                dispatch(toggleSavedJobLocal(job._id));
+                toast.success(response.data.message);
+            }
+        } catch (error) {
+            console.error(error);
+            toast.error(error.response?.data?.message || "Failed to save job");
+        }
+    };
 
     return (
         <div className='p-5 rounded-md shadow-xl bg-white border border-gray-100 hover:scale-105 transition-all duration-500 h-full flex flex-col'>
@@ -25,7 +52,15 @@ const Job = ({ job }) => {
                 <p className='text-sm text-gray-500'>
                     {daysAgoFunction(job?.createdAt) === 0 ? "Today" : `${daysAgoFunction(job?.createdAt)} days ago`}
                 </p>
-                <Button variant="outline" className="rounded-full" size="icon"><Bookmark /></Button>
+                <Button
+                    onClick={handleSaveToggle}
+                    variant="outline"
+                    className={`rounded-full ${isSaved ? 'text-primary border-primary' : ''}`}
+                    size="icon"
+                    title={isSaved ? "Remove from saved" : "Save for later"}
+                >
+                    {isSaved ? <BookmarkCheck className="fill-primary text-primary" /> : <Bookmark />}
+                </Button>
             </div>
 
             <div className='flex gap-2 items-center my-2'>
@@ -63,7 +98,12 @@ const Job = ({ job }) => {
 
             <div className='flex items-center gap-4 mt-4'>
                 <Button className="cursor-pointer" onClick={() => navigate(`/description/${job._id}`)} variant="outline">Details</Button>
-                <Button className="bg-primary hover:bg-primary/90 cursor-pointer">Save For Later</Button>
+                <Button
+                    onClick={handleSaveToggle}
+                    className={`cursor-pointer ${isSaved ? 'bg-gray-200 text-gray-700 hover:bg-gray-300' : 'bg-primary hover:bg-primary/90'}`}
+                >
+                    {isSaved ? "Saved ✓" : "Save For Later"}
+                </Button>
             </div>
 
         </div>

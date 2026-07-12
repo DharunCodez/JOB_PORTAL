@@ -136,7 +136,7 @@ const CompanySetup = () => {
                             />
                         </div>
                         <div>
-                            <Label>Loaction</Label>
+                            <Label>Location</Label>
                             <Input
                                 type="text"
                                 name="location"

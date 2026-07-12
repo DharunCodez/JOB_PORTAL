@@ -4,6 +4,7 @@ import Job from './Job'
 import { useDispatch, useSelector } from 'react-redux'
 import { setSearchedQuery } from '@/redux/jobSlice'
 import useGetAllJobs from '@/hooks/useGetAllJobs'
+import useGetSavedJobs from '@/hooks/useGetSavedJobs'
 import { motion } from "framer-motion"
 
 // const jobs = [
@@ -13,6 +14,7 @@ import { motion } from "framer-motion"
 const Browse = () => {
 
     useGetAllJobs();
+    useGetSavedJobs();
     const { allJobs } = useSelector(store => store.job)
 
     const dispatch = useDispatch();
@@ -21,7 +23,6 @@ const Browse = () => {
 
         return () => {
             dispatch(setSearchedQuery(""));
-            console.log("jiooo");
 
         }
     }, [dispatch])

@@ -6,9 +6,11 @@ import { Contact, Mail, Pen } from 'lucide-react';
 import { Badge } from './ui/badge';
 import { Label } from './ui/label';
 import AppliedJobTable from './AppliedJobTable';
+import SavedJobsTable from './SavedJobsTable';
 import UpdateProfileDialog from './UpdateProfileDialog';
 import { useSelector } from 'react-redux';
 import useGetAppliedJobs from '@/hooks/useGetAppliedJobs';
+import useGetSavedJobs from '@/hooks/useGetSavedJobs';
 import { motion } from "framer-motion"
 const skills = ["HTML", "CSS", "JAVASCRIPT", "REACTJS"];
 
@@ -16,6 +18,7 @@ const skills = ["HTML", "CSS", "JAVASCRIPT", "REACTJS"];
 function Profile() {
 
     useGetAppliedJobs();
+    useGetSavedJobs();
 
     const [open, setOpen] = useState(false)
     const { user } = useSelector(store => store.auth);
@@ -97,10 +100,14 @@ function Profile() {
 
             </motion.div>
 
-            <div className='bg-white rounded-2xl mx-[10%] max-sm:mx-[6%] mt-7 mb-14'>
-                <h1 className='font-bold text-lg my-5'>Applied Job</h1>
-                {/* table */}
+            <div className='bg-white rounded-2xl mx-[6%] max-sm:mx-[2%] mt-7 mb-7'>
+                <h1 className='font-bold text-lg my-5'>Applied Jobs</h1>
                 <AppliedJobTable />
+            </div>
+
+            <div className='bg-white rounded-2xl mx-[6%] max-sm:mx-[2%] mt-7 mb-14'>
+                <h1 className='font-bold text-lg my-5'>Saved Jobs</h1>
+                <SavedJobsTable />
             </div>
 
 
