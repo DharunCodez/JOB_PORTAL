@@ -18,6 +18,9 @@ export const register = async (req, res) => {
         const file = req.file
         let cloudResponse = ""
         if (file) {
+            if (process.env.CLOUDINARY_NAME === "your_cloudinary_name" || !process.env.CLOUDINARY_NAME) {
+                return res.status(400).json({ message: "Cloudinary is not configured. Cannot upload files.", success: false });
+            }
             const fileUri = getDataUri(file)
             cloudResponse = await cloudinary.uploader.upload(fileUri.content)
         }
@@ -52,7 +55,8 @@ export const register = async (req, res) => {
         })
 
     } catch (error) {
-        console.log(error)
+        console.error("Register Error:", error);
+        return res.status(500).json({ message: "Internal server error", success: false });
     }
 }
 
@@ -88,6 +92,7 @@ export const login = async (req, res) => {
 
         const tokenData = {
             userId: user._id,
+            role: user.role,
         }
 
         const token = await jwt.sign(tokenData, process.env.SECRET_KEY, { expiresIn: "1d" });
@@ -116,7 +121,8 @@ export const login = async (req, res) => {
 
 
     } catch (error) {
-        console.log(error);
+        console.error("Login Error:", error);
+        return res.status(500).json({ message: "Internal server error", success: false });
     }
 }
 
@@ -124,14 +130,19 @@ export const login = async (req, res) => {
 export const logout = async (req, res) => {
     try {
 
-        return res.status(200).cookie("token", "", { maxAge: 0 })
-            .json({
+        return res.status(200).cookie("token", "", {
+            maxAge: 0,
+            httpOnly: true,
+            sameSite: 'none',
+            secure: true,
+        }).json({
                 message: "Logged out successfully",
                 success: true,
             })
 
     } catch (error) {
-        console.log(error);
+        console.error("Logout Error:", error);
+        return res.status(500).json({ message: "Internal server error", success: false });
     }
 }
 
@@ -146,6 +157,9 @@ export const updateProfile = async (req, res) => {
 
         // file upload
         if (file) {
+            if (process.env.CLOUDINARY_NAME === "your_cloudinary_name" || !process.env.CLOUDINARY_NAME) {
+                return res.status(400).json({ message: "Cloudinary is not configured. Cannot upload files.", success: false });
+            }
             const fileUri = getDataUri(file);
             cloudResponse = await cloudinary.uploader.upload(fileUri.content, {
                 resource_type: 'auto',
@@ -202,7 +216,8 @@ export const updateProfile = async (req, res) => {
 
 
     } catch (error) {
-        console.log(error);
+        console.error("Update Profile Error:", error);
+        return res.status(500).json({ message: "Failed to update profile", success: false });
     }
 }
 

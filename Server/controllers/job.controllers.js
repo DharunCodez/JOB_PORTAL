@@ -1,4 +1,5 @@
 import { Job } from "../models/job.models.js";
+import { Application } from "../models/application.models.js";
 
 
 // role === "recruiter"
@@ -36,7 +37,8 @@ export const postJob = async (req, res) => {
         })
 
     } catch (error) {
-        console.log(error);
+        console.error("postJob error:", error);
+        return res.status(500).json({ message: "Internal server error", success: false });
     }
 }
 
@@ -74,7 +76,8 @@ export const getAllJobs = async (req, res) => {
 
 
     } catch (error) {
-        console.log(error);
+        console.error("getAllJobs error:", error);
+        return res.status(500).json({ message: "Internal server error", success: false });
     }
 }
 
@@ -91,7 +94,7 @@ export const getJobById = async (req, res) => {
             }
         );
         if (!job) {
-            res.status(404).json({
+            return res.status(404).json({
                 message: "Job not found",
                 success: false,
             })
@@ -104,7 +107,8 @@ export const getJobById = async (req, res) => {
         })
 
     } catch (error) {
-        console.log(error);
+        console.error("getJobById error:", error);
+        return res.status(500).json({ message: "Internal server error", success: false });
     }
 }
 
@@ -135,7 +139,49 @@ export const getRecruiterJobs = async (req, res) => {
 
 
     } catch (error) {
-        console.log(error);
+        console.error("getRecruiterJobs error:", error);
+        return res.status(500).json({ message: "Internal server error", success: false });
     }
 }
+
+export const deleteJob = async (req, res) => {
+    try {
+        const jobId = req.params.id;
+
+        const job = await Job.findById(jobId);
+        if (!job) {
+            return res.status(404).json({
+                message: "Job not found",
+                success: false,
+            });
+        }
+
+        // Verify ownership (only the recruiter who posted this job can delete it)
+        if (job.created_by.toString() !== req.id) {
+            return res.status(403).json({
+                message: "You are not authorized to delete this job",
+                success: false,
+            });
+        }
+
+        // 1. Cascade delete all applications for this job
+        await Application.deleteMany({ job: jobId });
+
+        // 2. Delete the job post itself
+        await Job.findByIdAndDelete(jobId);
+
+        return res.status(200).json({
+            message: "Job and all associated applications deleted successfully",
+            success: true,
+        });
+
+    } catch (error) {
+        console.error("deleteJob error:", error);
+        return res.status(500).json({
+            message: "Internal server error",
+            success: false,
+        });
+    }
+};
+
 
