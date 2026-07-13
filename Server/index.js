@@ -15,10 +15,23 @@ dotenv.config({});
 const app = express();
 
 // ── CORS must be registered BEFORE all routes ──────────────────────────
-const corsOptions = {
-    origin: process.env.FRONTEND_URL || "http://localhost:5173",
-    credentials: true,
+// ── CORS must be registered BEFORE all routes ──────────────────────────
+const allowedOrigins = [
+    "http://localhost:5173",
+    "https://job-portal-puce-nine.vercel.app"
+];
+
+if (process.env.FRONTEND_URL) {
+    // Add the URL exactly as it is in Render settings
+    allowedOrigins.push(process.env.FRONTEND_URL);
+    // Automatically add a version WITHOUT a trailing slash just in case
+    allowedOrigins.push(process.env.FRONTEND_URL.replace(/\/$/, ""));
 }
+
+const corsOptions = {
+    origin: allowedOrigins,
+    credentials: true,
+};
 app.use(cors(corsOptions));
 
 // ── Body / Cookie parsers ───────────────────────────────────────────────
@@ -52,7 +65,12 @@ app.use("/api/v1/savedjob", savedJobRouter);
 // ── Global error handler ────────────────────────────────────────────────
 app.use((err, req, res, next) => {
     console.error("Unhandled error:", err);
-    res.status(500).json({ message: "Internal server error", success: false });
+    res.status(500).json({ 
+        message: "Internal server error", 
+        error: err.message, 
+        stack: err.stack, 
+        success: false 
+    });
 });
 
 const PORT = process.env.PORT || 3000;
